@@ -12,6 +12,11 @@ import path from "path";
 import { fileURLToPath } from "url";
 import { glob } from "glob";
 
+// Version information
+const MCP_VERSION = "1.0.0";
+const MEMBERSTACK_DOM_VERSION = "1.9.40";
+const LAST_VERIFIED = "2025-01-06";
+
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
@@ -35,7 +40,7 @@ class MemberstackMCPServer {
     this.server = new Server(
       {
         name: "memberstack-mcp-server",
-        version: "1.0.0",
+        version: MCP_VERSION,
       },
       {
         capabilities: {
@@ -104,7 +109,7 @@ class MemberstackMCPServer {
         resources: files.map(file => ({
           uri: `memberstack://${file.path}`,
           name: file.title,
-          description: `${DOC_CATEGORIES[file.category] || file.category} - ${file.title}`,
+          description: `${DOC_CATEGORIES[file.category as keyof typeof DOC_CATEGORIES] || file.category} - ${file.title}`,
           mimeType: "text/markdown",
         })),
       };
@@ -139,7 +144,7 @@ class MemberstackMCPServer {
         tools: [
           {
             name: "search_memberstack_docs",
-            description: "Search through Memberstack documentation for specific topics, methods, or examples",
+            description: `Search through Memberstack documentation for specific topics, methods, or examples (DOM v${MEMBERSTACK_DOM_VERSION}, verified ${LAST_VERIFIED})`,
             inputSchema: {
               type: "object",
               properties: {
@@ -158,7 +163,7 @@ class MemberstackMCPServer {
           },
           {
             name: "list_memberstack_methods",
-            description: "List all available Memberstack methods by category",
+            description: `List all available Memberstack methods by category (DOM v${MEMBERSTACK_DOM_VERSION}, verified ${LAST_VERIFIED})`,
             inputSchema: {
               type: "object",
               properties: {
@@ -171,6 +176,15 @@ class MemberstackMCPServer {
               required: ["package"],
             },
           },
+          {
+            name: "get_documentation_info",
+            description: "Get version and metadata information about the Memberstack documentation",
+            inputSchema: {
+              type: "object",
+              properties: {},
+              required: [],
+            },
+          },
         ],
       };
     });
@@ -180,11 +194,15 @@ class MemberstackMCPServer {
       const { name, arguments: args } = request.params;
 
       if (name === "search_memberstack_docs") {
-        return await this.searchDocumentation(args.query, args.category);
+        return await this.searchDocumentation(args?.query as string, args?.category as string);
       }
 
       if (name === "list_memberstack_methods") {
-        return await this.listMethods(args.package);
+        return await this.listMethods(args?.package as string);
+      }
+
+      if (name === "get_documentation_info") {
+        return await this.getDocumentationInfo();
       }
 
       throw new Error(`Unknown tool: ${name}`);
@@ -248,7 +266,7 @@ class MemberstackMCPServer {
       rest: "rest-api/rest-api-reference.md",
     };
     
-    const filePath = methodMappings[packageName];
+    const filePath = methodMappings[packageName as keyof typeof methodMappings];
     if (!filePath) {
       return {
         content: [
@@ -290,6 +308,64 @@ class MemberstackMCPServer {
         ],
       };
     }
+  }
+
+  private async getDocumentationInfo() {
+    const files = await this.getDocumentationFiles();
+    const fileCount = files.length;
+    
+    // Calculate method counts from validation report if available
+    let methodCounts = {
+      dom: "unknown",
+      admin: "unknown",
+      rest: "13 endpoints"
+    };
+    
+    try {
+      const reportPath = path.join(this.docsPath, "..", "validation-report.json");
+      const reportData = await fs.readFile(reportPath, "utf-8");
+      const report = JSON.parse(reportData);
+      
+      methodCounts.dom = `${report.dom.documented} methods (${report.dom.coverage} coverage)`;
+      methodCounts.admin = `${report.admin.documented} methods (${report.admin.coverage} coverage)`;
+      methodCounts.rest = `${report.rest.endpoints} endpoints`;
+    } catch (error) {
+      // Report file might not exist, use fallback
+    }
+    
+    return {
+      content: [
+        {
+          type: "text",
+          text: `# Memberstack MCP Server Documentation Info
+
+## Version Information
+- **MCP Server Version:** ${MCP_VERSION}
+- **Memberstack DOM Version:** ${MEMBERSTACK_DOM_VERSION}
+- **Last Verified:** ${LAST_VERIFIED}
+
+## Documentation Coverage
+- **DOM Package:** ${methodCounts.dom}
+- **Admin Package:** ${methodCounts.admin}
+- **REST API:** ${methodCounts.rest}
+
+## Files Available
+- **Total Documentation Files:** ${fileCount}
+
+## Official Sources
+- **Official Docs:** https://docs.memberstack.com/
+- **Developer Portal:** https://developers.memberstack.com/
+
+## Validation Status
+Run \`node scripts/validate-documentation.js\` to check for accuracy and coverage.
+
+## Notes
+This documentation represents the current state of Memberstack APIs as of the last verification date. 
+Always verify against official documentation for the most current information, especially for 
+production implementations.`,
+        },
+      ],
+    };
   }
 
   async run() {

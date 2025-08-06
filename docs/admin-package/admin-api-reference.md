@@ -3,7 +3,12 @@
 **PACKAGE:** @memberstack/admin  
 **TYPE:** Server-side Node.js API  
 **AUTHENTICATION:** Secret Key Required  
+**LAST VERIFIED:** 2025-01-06  
+**OFFICIAL DOCS:** https://docs.memberstack.com/  
+**DEVELOPER PORTAL:** https://developers.memberstack.com/admin-node-package  
 **CRITICAL:** This API is for server-side use only. Never expose secret keys in client-side code.
+
+> **Note:** This documentation represents the Memberstack Admin Node.js SDK. Please verify against the latest official documentation for the most current information.
 
 ## Quick Reference Index
 - [Method Signatures Quick Lookup](#method-signatures-quick-lookup)
@@ -699,7 +704,7 @@ app.post('/webhook/memberstack', express.raw({ type: 'application/json' }), (req
 ```javascript
 // COMPLETE ERROR HANDLING:
 try {
-  const result = await memberstackAdmin.someMethod(params);
+  const result = await memberstackAdmin.getMember(params);
 } catch (error) {
   switch (error.code) {
     case 'member_not_found':

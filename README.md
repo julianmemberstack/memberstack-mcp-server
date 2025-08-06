@@ -4,7 +4,19 @@ Official Model Context Protocol (MCP) server providing Memberstack API documenta
 
 ## 🚀 Quick Install
 
-Users can install this MCP server with a single command:
+### Claude Code CLI (Recommended)
+
+Install directly using the Claude Code CLI:
+
+```bash
+claude mcp add memberstack -- npx -y memberstack-mcp-server
+```
+
+That's it! The server is now available in Claude Code.
+
+### Alternative Installation Methods
+
+#### NPX + Manual Configuration
 
 ```bash
 npx -y @memberstack/mcp-server
@@ -23,6 +35,13 @@ Then add to your Claude Code configuration:
 }
 ```
 
+#### Local Installation
+
+```bash
+npm install -g memberstack-mcp-server
+claude mcp add memberstack -- memberstack-mcp
+```
+
 ## 📚 What's Included
 
 This MCP server provides comprehensive Memberstack documentation:
@@ -34,6 +53,14 @@ This MCP server provides comprehensive Memberstack documentation:
 - **Integration Examples** - React, Vue, Next.js, SvelteKit, and more
 - **Error Handling** - Production-ready error management
 - **Quick Start Guide** - Get up and running in 10 minutes
+
+## 🔗 Official Memberstack Resources
+
+- **Official Documentation**: https://docs.memberstack.com/
+- **Developer Portal**: https://developers.memberstack.com/
+- **DOM Package**: https://developers.memberstack.com/dom-package
+- **Admin Package**: https://developers.memberstack.com/admin-node-package
+- **REST API**: https://developers.memberstack.com/admin-rest-api
 
 ## 🎯 Usage in Claude Code
 
@@ -49,6 +76,54 @@ Once installed, you can reference Memberstack documentation using:
 You can also use the built-in tools:
 - `search_memberstack_docs` - Search for specific topics
 - `list_memberstack_methods` - List all methods by package
+- `get_documentation_info` - Get version and metadata information
+
+## 🔧 Troubleshooting
+
+### Installation Issues
+
+**Claude Code CLI not found:**
+```bash
+# Update Claude Code to the latest version
+claude --version
+# Should be v0.5.0 or higher
+```
+
+**NPX installation fails:**
+```bash
+# Clear NPM cache and try again
+npm cache clean --force
+npx -y @memberstack/mcp-server
+```
+
+**Server not appearing in Claude Code:**
+```bash
+# Check if server is installed
+claude mcp list
+
+# Remove and reinstall if needed
+claude mcp remove memberstack
+claude mcp add memberstack -- npx -y memberstack-mcp-server
+```
+
+### Usage Issues
+
+**"No documentation found" error:**
+- Ensure the package was published with documentation files
+- Try reinstalling: `npm uninstall -g @memberstack/mcp-server && npm install -g memberstack-mcp-server`
+
+**Server connection timeout:**
+- Check Node.js version (requires Node.js ≥18)
+- Verify package permissions
+- Try running manually: `npx memberstack-mcp-server`
+
+### Getting Help
+
+**Need assistance?**
+- 📋 Check the [verification checklist](./VERIFICATION_CHECKLIST.md) for common issues
+- 🐛 Report bugs on [GitHub Issues](https://github.com/julianmemberstack/memberstack-mcp-server/issues)
+- 📚 Review [Memberstack's official docs](https://docs.memberstack.com/)
+- 🔍 Run `npm run validate-docs` to verify documentation accuracy
 
 ## 🔄 Updating Documentation
 
@@ -75,7 +150,10 @@ To update the documentation:
 # 2. Run the update script
 npm run update-docs
 
-# 3. The script will show you what to do next:
+# 3. Validate documentation accuracy
+npm run validate-docs
+
+# 4. The scripts will show you what to do next:
 #    - Review changes: git diff
 #    - Commit: git add docs && git commit -m "Update documentation"
 #    - Release: npm run release
@@ -96,6 +174,9 @@ npm install
 # Build the TypeScript code
 npm run build
 
+# Validate documentation
+npm run validate-docs
+
 # Test locally
 npm run dev
 ```
@@ -105,10 +186,18 @@ npm run dev
 ```
 memberstack-mcp-server/
 ├── src/
-│   └── index.ts        # MCP server implementation
-├── docs/               # Memberstack documentation (auto-copied)
+│   └── index.ts                        # MCP server implementation
+├── docs/                               # Memberstack documentation (auto-copied)
+│   ├── dom-package/
+│   ├── admin-package/
+│   └── rest-api/
 ├── scripts/
-│   └── update-docs.js  # Documentation update script
+│   ├── update-docs.js                  # Documentation update script
+│   └── validate-documentation.js      # Validation and accuracy checking
+├── INSTALLATION.md                     # Installation guide
+├── VERIFICATION_CHECKLIST.md          # Manual verification checklist
+├── ACCURACY_IMPROVEMENTS_SUMMARY.md   # Accuracy improvements report
+├── validation-report.json             # Automated validation report
 ├── package.json
 └── README.md
 ```

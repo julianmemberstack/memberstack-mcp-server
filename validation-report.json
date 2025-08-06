@@ -1,0 +1,16 @@
+{
+  "timestamp": "2025-08-06T11:02:28.067Z",
+  "dom": {
+    "documented": 31,
+    "expected": 31,
+    "coverage": "100.0%"
+  },
+  "admin": {
+    "documented": 13,
+    "expected": 13,
+    "coverage": "100.0%"
+  },
+  "rest": {
+    "endpoints": 13
+  }
+}

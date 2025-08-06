@@ -3,7 +3,12 @@
 **BASE URL:** https://api.memberstack.com/v1  
 **AUTHENTICATION:** Bearer token in Authorization header  
 **CONTENT TYPE:** application/json  
+**LAST VERIFIED:** 2025-01-06  
+**OFFICIAL DOCS:** https://docs.memberstack.com/  
+**DEVELOPER PORTAL:** https://developers.memberstack.com/admin-rest-api  
 **CRITICAL:** All requests require proper authentication and rate limiting
+
+> **Note:** This documentation represents the Memberstack REST API v1. Please verify endpoints and parameters against the latest official documentation for the most current information.
 
 ## Quick Reference Index
 - [Endpoint Quick Lookup](#endpoint-quick-lookup)

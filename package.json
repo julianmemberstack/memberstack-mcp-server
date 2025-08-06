@@ -1,8 +1,8 @@
 {
-  "name": "@memberstack/mcp-server",
+  "name": "memberstack-mcp-server",
   "version": "1.0.0",
   "description": "MCP server providing Memberstack API documentation for Claude Code",
-  "keywords": ["mcp", "memberstack", "claude", "ai", "documentation"],
+  "keywords": ["mcp", "memberstack", "claude", "ai", "documentation", "authentication", "model-context-protocol", "claude-code"],
   "author": "Memberstack",
   "license": "MIT",
   "homepage": "https://github.com/julianmemberstack/memberstack-mcp-server",
@@ -18,15 +18,21 @@
   "bin": {
     "memberstack-mcp": "./dist/index.js"
   },
+  "preferGlobal": false,
   "files": [
     "dist",
-    "docs"
+    "docs",
+    "INSTALLATION.md",
+    "VERIFICATION_CHECKLIST.md",
+    "ACCURACY_IMPROVEMENTS_SUMMARY.md",
+    "validation-report.json"
   ],
   "scripts": {
     "build": "tsc",
     "dev": "tsx src/index.ts",
     "prepare": "npm run build",
     "update-docs": "node scripts/update-docs.js",
+    "validate-docs": "node scripts/validate-documentation.js",
     "test": "echo \"No tests yet\"",
     "release": "npm version patch && npm publish"
   },

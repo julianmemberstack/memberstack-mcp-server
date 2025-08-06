@@ -1,0 +1,15 @@
+src/
+scripts/
+.github/
+.gitignore
+tsconfig.json
+*.log
+.env
+.env.local
+coverage/
+.vscode/
+.idea/
+*.swp
+*.swo
+CONTRIBUTING.md
+UPDATE_DOCS.md
